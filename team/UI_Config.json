@@ -1,0 +1,15 @@
+{
+  "output_file": "settings.json",
+  "command": {
+    "type": "textbox",
+    "value": "!team",
+    "label": "Command",
+    "tooltip": "The Command to get your Team."
+  },
+  "bot_response": {
+    "type": "textbox",
+    "value": "@{0}: Ich spiele heute mit @team@ zusammen.",
+    "label": "Bot Response",
+    "tooltip": "The Message the Bot will give after it was triggered."
+  }
+}

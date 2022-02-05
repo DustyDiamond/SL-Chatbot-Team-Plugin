@@ -1,0 +1,9 @@
+{
+    "command": "!team",
+    "permission": "Moderator",
+    "cooldown": 30,
+    "bot_response": "Ich spiele heute mit $team zusammen.",
+    "users":"",
+    "onCooldown": "$user, $command is still on cooldown for $cd seconds!",
+	"onUserCooldown": "$user, $command is still on user cooldown for $cd seconds! "
+}
