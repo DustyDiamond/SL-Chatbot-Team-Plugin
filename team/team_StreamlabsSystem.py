@@ -8,7 +8,7 @@ ScriptName = "Team Command"
 Website = "http://www.dustydiamond.de/"
 Description = "Answers with the Current Team you're playing with"
 Creator = "DustyDiamond"
-Version = "1.0.0"
+Version = "1.0.1"
 Command = "!team"
 
 settings = {}
@@ -89,7 +89,7 @@ def Execute(data):
             #outputMessage = "!team was triggered"
 
     # !setteam branch
-    elif data.IsChatMessage() and data.GetParam(0).lower() == ("!set" + right(settings["command"],(len(settings["command"])-1))) and Parent.HasPermission(data.User, settings["permission"], ""):        
+    elif data.IsChatMessage() and data.GetParam(0).lower() == (left(settings["command"],1) + "set" + right(settings["command"],(len(settings["command"])-1))) and Parent.HasPermission(data.User, settings["permission"], ""):        
         paramCount = int(data.GetParamCount())
         users = []
 
