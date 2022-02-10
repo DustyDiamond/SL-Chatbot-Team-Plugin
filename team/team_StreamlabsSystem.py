@@ -8,7 +8,7 @@ ScriptName = "Team Command"
 Website = "http://www.dustydiamond.de/"
 Description = "Answers with the Current Team you're playing with"
 Creator = "DustyDiamond"
-Version = "1.0.1"
+Version = "1.0.2"
 Command = "!team"
 
 settings = {}
@@ -120,10 +120,25 @@ def Execute(data):
                 outputMessage = outputMessage + x + ", "
             else:
                 userlist = userlist + users[-1]
-                outputMessage = left(outputMessage,(len(outputMessage) -2)) + " und " + users[-1]
+                #outputMessage = left(outputMessage,(len(outputMessage) -2)) + " und " + users[-1]
 
         settings["users"] = userlist
         
+        team = ""
+        if len(users) == 1:
+            team = users[0]
+        else:
+            for i in users[:-1]:
+                if i == "": 
+                    continue
+
+                team = team + i + ", "
+            else:
+                team = left(team,(len(team) -2)) + " und " + users[-1]
+            
+        outputMessage = settings["bot_response"]
+        outputMessage = outputMessage.replace("$team", team)
+        #outputMessage = "!team was triggered"
 
     # final send of message
     send_message(outputMessage)
