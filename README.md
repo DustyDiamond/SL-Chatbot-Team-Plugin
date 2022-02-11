@@ -1,5 +1,7 @@
 # SL Chatbot Team Plugin
 
+![GitHub release (release name instead of tag name)](https://img.shields.io/github/v/release/dustydiamond/SL-Chatbot-Team-Plugin?include_prereleases&sort=date) ![GitHub](https://img.shields.io/github/license/DustyDiamond/SL-Chatbot-Team-Plugin)
+
 A simple Plugin for Streamlabs Chatbot.  
 You can set your own command in Script Settings in Chatbot. Standard is `!team` and `!setteam`.  
 If you set your command to anything new, the set-command is `!set<command>`.  
