@@ -5,17 +5,19 @@ import codecs
 from datetime import datetime
 
 ScriptName = "Team Command"
-Website = "http://www.dustydiamond.de/"
+Website = "https://github.com/DustyDiamond/SL-Chatbot-Team-Plugin/blob/main/README.md"
 Description = "Answers with the Current Team you're playing with"
 Creator = "DustyDiamond"
 Version = "1.0.2"
 Command = "!team"
 
 settings = {}
+languages = {}
 users = []
+und = ""
 
 def Init():
-    global settings, users
+    global settings, users, languages
 
     work_dir = os.path.dirname(__file__)
 
@@ -24,34 +26,24 @@ def Init():
             settings = json.load(json_file, encoding='utf-8-sig')
     
     except:
-        settings = {
-            "command": "!team",
-            "permission": "Moderators",
-            "cooldown": 30,
-            "bot_response": "Ich spiele heute mit $team zusammen.",
-            "users":"user1,user2",
-            "onCooldown": "$user, $command is still on cooldown for $cd seconds!",
-	        "onUserCooldown": "$user, $command is still on user cooldown for $cd seconds! "
-        }
+        Parent.Log("ERROR: ", "[" + ScriptName + "]:  Unable to load settings during execution! (Init)")
 
-    temp = str(settings["users"])
-    users = temp.split(",")
+    try:
+        with codecs.open(os.path.join(work_dir, "languages.json"), encoding='utf-8-sig') as json_file:
+            languages = json.load(json_file, encoding='utf-8-sig')
+    except:
+        Parent.Log("ERROR: ", "[" + ScriptName + "]:  Unable to load languages during execution! (Init)")
+
     return
 
-def log(message):
-    now = datetime.now()
-    dt_string = now.strftime("%d.%m.%Y %H:%M:%S")
-    Parent.Log("INFO:", ScriptName + ": " + dt_string + ": " + message)
-    return
-
-def send_message(message):
-    Parent.SendStreamMessage(message)
-    log("Message Sent")
-    return
 
 def Execute(data):
-    global settings, users
+    global settings, users, languages
     outputMessage = ""
+    lang = settings["language"]
+    und = languages[lang]
+    username = data.User
+
     # !team branch
     if data.IsChatMessage() and data.GetParam(0).lower() == settings["command"] and Parent.HasPermission(data.User, "Everyone", ""):
         
@@ -82,7 +74,7 @@ def Execute(data):
 
                     team = team + i + ", "
                 else:
-                    team = left(team,(len(team) -2)) + " und " + users[-1]
+                    team = left(team,(len(team) -2)) + " " + und + " " + users[-1]
                 
             outputMessage = settings["bot_response"]
             outputMessage = outputMessage.replace("$team", team)
@@ -106,43 +98,64 @@ def Execute(data):
                     users.append(data.GetParam(i))
                     log(str(i) + ": " + data.GetParam(i))
 
-        outputMessage = "Added users "
-        userlist = ""
-        if len(users) == 1:
-            userlist = users[0]
-            outputMessage = outputMessage + users[0]
-        else:
-            for x in users[:-1]:
-                if x == "":
-                    continue
 
-                userlist = userlist + x + ","
-                outputMessage = outputMessage + x + ", "
+        if settings["useSetteam"] == True:
+            # Extra message for !setteam
+            userlist = ""
+            team = ""
+            if len(users) == 1:
+                userlist = users[0]
+                team = team + users[0]
             else:
-                userlist = userlist + users[-1]
-                #outputMessage = left(outputMessage,(len(outputMessage) -2)) + " und " + users[-1]
+                for x in users[:-1]:
+                    if x == "":
+                        continue
 
-        settings["users"] = userlist
-        
-        team = ""
-        if len(users) == 1:
-            team = users[0]
+                    userlist = userlist + x + ","
+                    team = team + x + ", "
+                else:
+                    userlist = userlist + users[-1]
+                    team = left(team,(len(team) -2)) + " " + und + " " + users[-1]
+
+            settings["users"] = userlist
+            outputMessage = settings["setteam"]
+            outputMessage = outputMessage.replace("$team", team)
+
         else:
-            for i in users[:-1]:
-                if i == "": 
-                    continue
-
-                team = team + i + ", "
+            # Same Message for Both
+            team = ""
+            if len(users) == 1:
+                team = users[0]
             else:
-                team = left(team,(len(team) -2)) + " und " + users[-1]
-            
-        outputMessage = settings["bot_response"]
-        outputMessage = outputMessage.replace("$team", team)
-        #outputMessage = "!team was triggered"
+                for i in users[:-1]:
+                    if i == "": 
+                        continue
+
+                    team = team + i + ", "
+                else:
+                    team = left(team,(len(team) -2)) + " " + und + " " + users[-1]
+                
+            outputMessage = settings["bot_response"]
+            outputMessage = outputMessage.replace("$team", team)
 
     # final send of message
-    send_message(outputMessage)
+    send_message(outputMessage.format(username))
     return
+
+# Misc Functions
+def log(message):
+    now = datetime.now()
+    dt_string = now.strftime("%d.%m.%Y %H:%M:%S")
+    Parent.Log("INFO:", ScriptName + ": " + dt_string + ": " + message)
+    return
+
+def send_message(message):
+    Parent.SendStreamMessage(message)
+    log("Message Sent")
+    return
+
+def OpenWebSite():
+	os.startfile(Website)
 
 def ReloadSettings(jsonData):
     Init()
@@ -154,7 +167,7 @@ def Tick():
 def Unload():
     return
 
-# Define Helpers
+# Define Helper Functions
 def left(s, amount):
     return s[:amount]
 

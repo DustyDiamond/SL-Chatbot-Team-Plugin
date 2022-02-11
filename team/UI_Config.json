@@ -1,5 +1,6 @@
 {
   "output_file": "settings.json",
+
   "command": {
     "type": "textbox",
     "value": "!team",
@@ -8,8 +9,38 @@
   },
   "bot_response": {
     "type": "textbox",
-    "value": "@{0}: Ich spiele heute mit @team@ zusammen.",
+    "value": "@{0}: Today I play with $team.",
+    "label": "Bot !team Response",
+    "tooltip": "The Message the Bot will give after it was triggered through !team."
+  },
+  "useSetteam": {
+    "type": "checkbox",
+    "value": true,
+    "label": "Use !setteam response",
+    "tooltip": "Use Different Response for !setteam",
+    "group": "Extra Settings"
+  },
+  "setteam": {
+    "type": "textbox",
+    "value": "@{0}: Added users $team.",
+    "label": "Bot !setteam Response",
+    "tooltip": "The Message the Bot will give after it was triggered through !setteam.",
+    "group": "Extra Settings"
+  },
+  "language": {
+    "type": "dropdown",
     "label": "Bot Response",
-    "tooltip": "The Message the Bot will give after it was triggered."
+    "value": "English",
+    "items": ["English","German"],
+    "tooltip": "The language your Bot responses are.",
+    "group": "Extra Settings"
+  },
+  "devWeb": {
+    "type": "button",
+    "label": "Visit my Readme",
+    "tooltip": "Opens your browser and loads the Readme on GitHub.",
+    "function": "OpenWebSite",
+    "wsevent": "",
+    "group": "Support:"
   }
 }

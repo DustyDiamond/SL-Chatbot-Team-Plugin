@@ -2,8 +2,11 @@
     "command": "!team",
     "permission": "Moderator",
     "cooldown": 30,
-    "bot_response": "Ich spiele heute mit $team zusammen.",
-    "users":"",
+    "bot_response": "@{0}: Today I play with $team.",
     "onCooldown": "$user, $command is still on cooldown for $cd seconds!",
-	"onUserCooldown": "$user, $command is still on user cooldown for $cd seconds! "
+	"onUserCooldown": "$user, $command is still on user cooldown for $cd seconds! ",
+    "users": "",
+    "useSetteam": true,
+    "setteam": "@{0}: Added users $team.",
+    "language": "English"
 }
