@@ -8,7 +8,7 @@ ScriptName = "Team Command"
 Website = "https://github.com/DustyDiamond/SL-Chatbot-Team-Plugin/blob/main/README.md"
 Description = "Answers with the Current Team you're playing with"
 Creator = "DustyDiamond"
-Version = "1.0.2"
+Version = "1.0.3"
 Command = "!team"
 
 settings = {}
