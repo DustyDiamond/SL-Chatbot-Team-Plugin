@@ -16,7 +16,7 @@ ScriptName = "Team Command"
 Website = "https://github.com/DustyDiamond/SL-Chatbot-Team-Plugin/blob/main/README.md"
 Description = "Answers with the Current Team you're playing with"
 Creator = "DustyDiamond"
-Version = "1.0.4"
+Version = "1.0.5"
 Command = "!team"
 
 #---------------------------------------------------------
@@ -26,6 +26,7 @@ settings = {}
 languages = {}
 users = []
 und = ""
+team = ""
 
 def Init():
     global settings, languages
@@ -49,48 +50,14 @@ def Init():
 
 
 def Execute(data):
-    global settings, users, languages
+    global settings, users, languages, team 
     outputMessage = ""
-    lang = settings["language"]
-    und = languages[lang]
-    username = data.User
-
-
-    #---------------------------------------------------------
-    # !team branch
-    #---------------------------------------------------------
-    if data.IsChatMessage() and data.GetParam(0).lower() == settings["command"] and Parent.HasPermission(data.User, "Everyone", ""):
-        
-        if settings["users"] == "":
-            return
-        
-        userId = data.User
-        username = data.UserName
-
-        # Any Cooldowns strikes
-        #if (Parent.IsOnCooldown(ScriptName, settings["command"]) or Parent.IsOnUserCooldown(ScriptName, settings["command"], userId)):
-        #    if Parent.GetCooldownDuration(ScriptName, settings["command"]) > Parent.GetUserCooldownDuration(ScriptName, settings["command"], userId):
-        #        cdi = Parent.GetCooldownDuration(ScriptName, settings["command"])
-        #        cd = str(cdi)
-        #        outputMessage = settings["onCooldown"]
-        #    else:
-        #        cdi = Parent.GetUserCooldownDuration(ScriptName, settings["command"], userId)
-        #        cd = str(cdi)
-        #        outputMessage = settings["onUserCooldown"]
-        #    outputMessage = outputMessage.replace("$cd", cd)
-
-        #else:
-        team = ""
-        team = team_msg()
-            
-        outputMessage = settings["bot_response"]
-        outputMessage = outputMessage.replace("$team", team)
-            #outputMessage = "!team was triggered"
-
+    username = data.User  
+    team = settings["users"] 
     #---------------------------------------------------------
     # !setteam branch
     #---------------------------------------------------------
-    elif data.IsChatMessage() and data.GetParam(0).lower() == (left(settings["command"],1) + "set" + right(settings["command"],(len(settings["command"])-1))) and Parent.HasPermission(data.User, settings["permission"], ""):        
+    if data.IsChatMessage() and data.GetParam(0).lower() == (left(settings["command"],1) + "set" + right(settings["command"],(len(settings["command"])-1))) and Parent.HasPermission(data.User, settings["permission"], ""):        
         paramCount = int(data.GetParamCount())
         users = []
 
@@ -107,36 +74,29 @@ def Execute(data):
                     users.append(data.GetParam(i))
                     #log(str(i) + ": " + data.GetParam(i))
 
+            team_msg()
+            #team = settings["users"]  
 
-        if settings["useSetteam"] == True:
-            # Extra message for !setteam
-            userlist = ""
-            team = ""
-            if len(users) == 1:
-                userlist = users[0]
-                team = team + users[0]
+            if (settings["useSetteam"]):
+                outputMessage = settings["setteam"]
             else:
-                for x in users[:-1]:
-                    if x == "":
-                        continue
+                outputMessage = settings["bot_response"]
 
-                    userlist = userlist + x + ","
-                    team = team + x + ", "
-                else:
-                    userlist = userlist + users[-1]
-                    team = left(team,(len(team) -2)) + " " + und + " " + users[-1]
+            log("Team Set!")       
 
-            settings["users"] = userlist
-
-        else:
-            # Same Message for Both
-            team = ""
-            team = team_msg()
+    #---------------------------------------------------------
+    # !team branch
+    #---------------------------------------------------------
+    elif data.IsChatMessage() and data.GetParam(0).lower() == settings["command"] and Parent.HasPermission(data.User, "Everyone", ""):
         
+        if settings["users"] == "" or team == "":
+            return
+        
+        username = data.UserName
+        #team = settings["users"]  
         outputMessage = settings["bot_response"]
-        outputMessage = outputMessage.replace("$team", team) 
-        log("Team Set!")       
 
+    outputMessage = outputMessage.replace("$team", team) 
     # final send of message
     send_message(outputMessage.format(username))
     return
@@ -155,10 +115,11 @@ def send_message(message):
 
 # build team message
 def team_msg():
-    global settings, users, languages
+    global settings, users, languages, team
     lang = settings["language"]
     und = languages[lang]
     team = ""
+
     if len(users) == 1:
         team = users[0]
     else:
@@ -169,8 +130,10 @@ def team_msg():
             team = team + i + ", "
         else:
             team = left(team,(len(team) -2)) + " " + und + " " + users[-1]
-
-    return team
+        
+    
+    settings["users"] = team
+    return 
 
 def OpenWebSite():
 	os.startfile(Website)
