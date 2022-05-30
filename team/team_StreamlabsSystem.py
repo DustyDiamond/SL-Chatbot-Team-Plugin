@@ -55,52 +55,56 @@ def Execute(data):
     username = data.User  
     team = settings["users"] 
     if data.IsChatMessage():
-        #---------------------------------------------------------
-        # !setteam branch
-        #---------------------------------------------------------
-        if data.GetParam(0).lower() == (left(settings["command"],1) + "set" + right(settings["command"],(len(settings["command"])-1))) and Parent.HasPermission(data.User, settings["permission"], ""):        
-            paramCount = int(data.GetParamCount())
-            users = []
+        if data.GetParam(0) == "":
+            return
 
-            #log("paramCount: "+ str(paramCount))
+        if left(data.GetParam(0),1) == left(settings["command"],1):
+            #---------------------------------------------------------
+            # !setteam branch
+            #---------------------------------------------------------
+            if data.GetParam(0).lower() == (left(settings["command"],1) + "set" + right(settings["command"],(len(settings["command"])-1))) and Parent.HasPermission(data.User, settings["permission"], ""):        
+                paramCount = int(data.GetParamCount())
+                users = []
 
-            for i in range(paramCount):
-                if i == 0:
-                    continue
-                else:
-                    try:
-                        users.insert(i,data.GetParam(i))
-                        #log(str(i) + ": " + data.GetParam(i))
-                    except:
-                        users.append(data.GetParam(i))
-                        #log(str(i) + ": " + data.GetParam(i))
+                #log("paramCount: "+ str(paramCount))
 
-                team_msg()
+                for i in range(paramCount):
+                    if i == 0:
+                        continue
+                    else:
+                        try:
+                            users.insert(i,data.GetParam(i))
+                            #log(str(i) + ": " + data.GetParam(i))
+                        except:
+                            users.append(data.GetParam(i))
+                            #log(str(i) + ": " + data.GetParam(i))
+
+                    team_msg()
+                    #team = settings["users"]  
+
+                    if (settings["useSetteam"]):
+                        outputMessage = settings["setteam"]
+                    else:
+                        outputMessage = settings["bot_response"]
+
+                    #log("Team Set!")       
+
+            #---------------------------------------------------------
+            # !team branch
+            #---------------------------------------------------------
+            elif data.GetParam(0).lower() == settings["command"] and Parent.HasPermission(data.User, "Everyone", ""):
+                
+                if settings["users"] == "" or team == "":
+                    return
+                
+                username = data.UserName
                 #team = settings["users"]  
+                outputMessage = settings["bot_response"]
 
-                if (settings["useSetteam"]):
-                    outputMessage = settings["setteam"]
-                else:
-                    outputMessage = settings["bot_response"]
-
-                #log("Team Set!")       
-
-        #---------------------------------------------------------
-        # !team branch
-        #---------------------------------------------------------
-        elif data.GetParam(0).lower() == settings["command"] and Parent.HasPermission(data.User, "Everyone", ""):
-            
-            if settings["users"] == "" or team == "":
-                return
-            
-            username = data.UserName
-            #team = settings["users"]  
-            outputMessage = settings["bot_response"]
-
-        outputMessage = outputMessage.replace("$team", team) 
-        # final send of message
-        send_message(outputMessage.format(username))
-        return
+            outputMessage = outputMessage.replace("$team", team) 
+            # final send of message
+            send_message(outputMessage.format(username))
+            return
 
 # Misc Functions
 def log(message):
